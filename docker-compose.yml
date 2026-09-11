@@ -1,0 +1,18 @@
+services:
+  core:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: core
+    models:
+      - embedding
+      - llm
+    stdin_open: true
+    tty: true
+
+models:
+  embedding:
+    model: ai/embeddinggemma:300M-Q8_0
+  llm:
+    model: ai/gemma4:E2B
+  
