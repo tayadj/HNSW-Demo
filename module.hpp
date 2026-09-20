@@ -158,19 +158,19 @@ class Index {
             float currentDistance = distance(graph[currentNode].embedding, query);
 
             std::priority_queue<std::pair<float, int>, std::vector<std::pair<float, int>>, std::greater<std::pair<float, int>>> closest;
-            std::priority_queue<std::pair<float,int>> fartherst;
+            std::priority_queue<std::pair<float,int>> farthest;
             std::unordered_set<int> visited;
 
             closest.push(std::make_pair(currentDistance, currentNode));
-            fartherst.push(std::make_pair(currentDistance, currentNode));
+            farthest.push(std::make_pair(currentDistance, currentNode));
             visited.insert(currentNode);
 
             while (!closest.empty()) {
                 const auto [candidateDistance, candidateId] = closest.top();
-                float worstDistance = fartherst.top().first;
+                float worstDistance = farthest.top().first;
                 closest.pop();
 
-                if (candidateDistance > worstDistance && fartherst.size() >= sampleSize) { break; }
+                if (candidateDistance > worstDistance && farthest.size() >= sampleSize) { break; }
                 if (entryLevel >= neighbors[candidateId].size()) { continue; }
 
                 for (int neighbor : neighbors[candidateId][entryLevel]) {
@@ -178,23 +178,23 @@ class Index {
 
                     visited.insert(neighbor);
                     float neighborDistance = distance(graph[neighbor].embedding, query);
-                    worstDistance = fartherst.top().first;
+                    worstDistance = farthest.top().first;
 
-                    if (fartherst.size() < sampleSize || neighborDistance < worstDistance) {
+                    if (farthest.size() < sampleSize || neighborDistance < worstDistance) {
                         closest.push(std::make_pair(neighborDistance, neighbor));
-                        fartherst.push(std::make_pair(neighborDistance, neighbor));
+                        farthest.push(std::make_pair(neighborDistance, neighbor));
 
-                        if (fartherst.size() > sampleSize) {
-                            fartherst.pop();
+                        if (farthest.size() > sampleSize) {
+                            farthest.pop();
                         }
                     }
                 }
             }
 
             std::vector<std::pair<float, int>> found;
-            while (!fartherst.empty()) {
-                found.push_back(fartherst.top());
-                fartherst.pop();
+            while (!farthest.empty()) {
+                found.push_back(farthest.top());
+                farthest.pop();
             }
             std::sort(found.begin(), found.end());
 
