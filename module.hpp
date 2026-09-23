@@ -54,7 +54,6 @@ class Index {
             int entryNode = entry;
             for (int currentLevel = currentMaxLevel; currentLevel > nodeLevel; --currentLevel) {
                 entryNode = greedySearch(nodeEmbedding, entryNode, currentLevel);
-
             }
 
             for (int currentLevel = std::min(nodeLevel, currentMaxLevel); currentLevel >= 0; --currentLevel) {
