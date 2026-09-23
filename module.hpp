@@ -57,7 +57,7 @@ class Index {
             }
 
             for (int currentLevel = std::min(nodeLevel, currentMaxLevel); currentLevel >= 0; --currentLevel) {
-                std::vector<int> candidates = layerSearch(nodeEmbedding, entryNode, currentLevel, sampleSizeInsert);
+                std::vector<int> candidates = beamSearch(nodeEmbedding, entryNode, currentLevel, sampleSizeInsert);
                 std::vector<int> selected = selectNeighbors(nodeEmbedding, candidates);
 
                 for (int neighbor : selected) {
@@ -86,7 +86,7 @@ class Index {
                 entryNode = greedySearch(query, entryNode, currentLevel);
             }
 
-            std::vector<int> found = layerSearch(query, entryNode, 0, sampleSizeSearch);
+            std::vector<int> found = beamSearch(query, entryNode, 0, sampleSizeSearch);
             std::sort(
                 found.begin(), found.end(), 
                 [this, &query](int x, int y) {
@@ -152,7 +152,7 @@ class Index {
             return currentNode;
         }
 
-        std::vector<int> layerSearch(const std::vector<float>& query, int entryNode, int entryLevel, int sampleSize) const {
+        std::vector<int> beamSearch(const std::vector<float>& query, int entryNode, int entryLevel, int sampleSize) const {
             int currentNode = entryNode;
             float currentDistance = distance(graph[currentNode].embedding, query);
 
